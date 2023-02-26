@@ -7,6 +7,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { addProduct, deleteProductById } from "../../actions";
 import "./style.css";
 import { generatePublicUrl } from "../../urlConfig";
+import { useEffect } from "react";
 
 /**
  * @author
@@ -19,6 +20,7 @@ const Products = (props) => {
   const [price, setPrice] = useState("");
   const [offer, setOffer] = useState("");
   const [description, setDescription] = useState("");
+  const [otherDescription, setotherDescription] = useState([]);
   const [categoryId, setCategoryId] = useState("");
   const [productPictures, setProductPictures] = useState([]);
   const [show, setShow] = useState(false);
@@ -26,19 +28,48 @@ const Products = (props) => {
   const [productDetails, setProductDetails] = useState(null);
   const category = useSelector((state) => state.category);
   const product = useSelector((state) => state.product);
+  let [array, setArray] = useState([]);
+  let [inputdata, setInputdata] = useState({ name1: "", number: "" });
+  let { name1, number } = inputdata;
   const dispatch = useDispatch();
 
   const handleClose = () => {
     setShow(false);
   };
 
+  function data(e) {
+    // e.preventDefault();
+    setInputdata({ ...inputdata, [e.target.name]: e.target.value });
+    console.log(inputdata);
+  }
+
+  // useEffect(() =>{
+  //   setArray(array =>[...array,{inputdata}])
+  //   console.log(array);
+  // },[array])
+  function addinputdata() {
+    if (name1 === "" && number === "") {
+      alert("Enter Name and Roll no ");
+    } else {
+      // setArray(array =>[...array,{inputdata}])
+      array.push(inputdata);
+      otherDescription.push(inputdata)
+      console.log("This is array", array);
+      console.log(inputdata);
+      setInputdata({ name1: "", number: "" });
+    }
+  }
+
   const submitProductForm = () => {
+    console.log("This are otherDetails",JSON.stringify(otherDescription))
     const form = new FormData();
     form.append("name", name);
     form.append("quantity", quantity);
     form.append("price", price);
     form.append("offer", offer);
     form.append("description", description);
+    // for (var i = 0; i < otherDescription.length; i++) {
+    form.append("otherDescription", JSON.stringify(otherDescription));
     form.append("category", categoryId);
 
     for (let pic of productPictures) {
@@ -65,7 +96,7 @@ const Products = (props) => {
   };
 
   const renderProducts = () => {
-    console.log(product.products)
+    console.log(product.products);
     return (
       <Table style={{ fontSize: 12 }} responsive="sm">
         <thead>
@@ -150,6 +181,46 @@ const Products = (props) => {
           placeholder={`Description`}
           onChange={(e) => setDescription(e.target.value)}
         />
+         {/* <Input
+          label="Description"
+          value={otherDescription}
+          placeholder={`otherDescription`}
+          onChange={(e) => setotherDescription(e.target.value)}
+        /> */}
+        {"Other Description "}<br></br>
+        <input
+          type="text"
+          value={inputdata.name1}
+          name="name1"
+          autoComplete="off"
+          placeholder="Enter Name"
+          onChange={data}
+        />
+        <input
+          type="text"
+          value={inputdata.number}
+          name="number"
+          placeholder="Enter Number"
+          onChange={data}
+        />
+        <button onClick={addinputdata}>{`Add data`}</button><br></br>
+        <table border="1" >
+        <tbody>
+        <tr>
+                        <th>Name</th>
+                        <th>Number</th>
+                        </tr>
+        
+        {array.map((item, i) => {return(
+            <tr key={i}>
+              <td>{item.name1}</td>
+              <td>{item.number}</td>
+            </tr>
+          )
+            
+          })}
+          </tbody>
+          </table>
         <select
           className="form-control"
           value={categoryId}

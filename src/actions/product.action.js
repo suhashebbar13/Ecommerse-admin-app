@@ -8,6 +8,7 @@ const getProducts = () => {
       dispatch({ type: productConstants.GET_ALL_PRODUCTS_REQUEST });
       const res = await axios.post(`product/getProducts`);
       if (res.status === 200) {
+        console.log("In server")
         const { products } = res.data;
         dispatch({
           type: productConstants.GET_ALL_PRODUCTS_SUCCESS,
@@ -17,6 +18,7 @@ const getProducts = () => {
         dispatch({ type: productConstants.GET_ALL_PRODUCTS_FAILURE });
       }
     } catch (error) {
+      console.log("In server")
       console.log(error);
     }
   };
@@ -44,11 +46,14 @@ export const addProduct = (form) => {
 export const deleteProductById = (payload) => {
   return async (dispatch) => {
     try {
+      console.log("In try")
       const res = await axios.delete(`product/deleteProductById`, {
         data: { payload },
       });
+      console.log("After res")
       dispatch({ type: productConstants.DELETE_PRODUCT_BY_ID_REQUEST });
       if (res.status === 202) {
+        console.log("Inside if")
         dispatch({ type: productConstants.DELETE_PRODUCT_BY_ID_SUCCESS });
         dispatch(getProducts());
       } else {
@@ -65,3 +70,28 @@ export const deleteProductById = (payload) => {
     }
   };
 };
+
+export const deletereviewsbyid = (payload) =>{
+  return async (dispatch) => {
+    try {
+      const res = await axios.delete(`/product/deleteResviewById`, {
+        data: { payload },
+      });
+      dispatch({ type: productConstants.DELETE_REVIEW_BY_ID_REQUEST });
+      if (res.status === 202) {
+        dispatch({ type: productConstants.DELETE_REVIEW_BY_ID_SUCCESS });
+        dispatch(getProducts());
+      } else {
+        const { error } = res.data;
+        dispatch({
+          type: productConstants.DELETE_REVIEW_BY_ID_FAILURE,
+          payload: {
+            error,
+          },
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+}

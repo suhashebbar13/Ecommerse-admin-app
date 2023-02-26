@@ -34,7 +34,7 @@ const Orders = (props) => {
 
   return (
     <Layout sidebar>
-      {order.orders.map((orderItem, index) => (
+      {order.orders.slice(0,order.orders.length).reverse().map((orderItem, index) => (
         <Card
           style={{
             margin: "10px 0",
